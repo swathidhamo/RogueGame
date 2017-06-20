@@ -143,6 +143,9 @@
 
         array[j][( (n*n)-(3*n -1) )] = 1;
         array[j][((n*n)-(2*n -2))] = 1;
+           /*for(var k = Math.round(n*n)/(j+2);k<=(Math.round(n*n)/(j+2))+(n-3);k++)
+            array[j][k] = 1;*/
+
 
           }
     
@@ -430,8 +433,8 @@
             }
 
 
- eneX = 220; 
-               eneY = 300;
+               eneX = 220; 
+               eneY = 280;
                eneV = 2.5;
                //to create an array containg instances of the enemy and enemy bullet objects, depending on the level there will be one, two and three enemies respectively
 
@@ -439,7 +442,7 @@
                 enemies[j] = new enemy(eneX,eneY,35,35,eneV,0,true);
                 bulletEnemy[j] = new enemyBullet(eneX+12,eneY+12,15,4,eneV,0,true);
                 eneX+= 130;
-                eneY+= 205;
+                eneY+= 150;
                }
 
 
@@ -454,12 +457,29 @@
                   this.velocityX = velocityX;
                   this.velocityY = velocityY;
                   this.status = true;
+                  this.tileTo = [0,0];
+                  this.tileFrom = [0,0];
 
 
                  }
+            enemy.prototype.placeAt = function(){
+
+                  /*this.tileFrom = [ex,ey];
+                  this.tileTo = [ex,ey];
+                  this.x = ex*tileW + ((tileW-this.height)/2);
+                  this.y = ey*tileH + ((tileH-this.width)/2);*/
+
+                  ex = Math.round(this.x - ((tileW-this.height)/2))/tileW;
+                  ey = Math.round(this.y - ((tileH-this.width)/2))/tileH;
+                  this.tileFrom = [ex,ey];
+
+                  gameMap[toIndex(this.tileFrom[0],this.tileFrom[1])] = 1;
+ 
+            };
 
             enemy.prototype.draw = function(ox,oy,k,statusEnemies){
-                   
+
+
                    if(statusEnemies){
                    ctx.fillStyle = "34e00f";
                    ctx.drawImage(player_Pic,this.x+ox,this.y+oy,this.width,this.height);
@@ -469,7 +489,9 @@
                 };
 
             enemy.prototype.move = function(ox,oy,k,statusEnemies){
-                  if(this.x+this.velocityX>335){
+                  enemies[k].placeAt();
+
+                  if(this.x+this.velocityX>235){
                      this.velocityX = -2.5;
                       if(enemies[k].x==bulletEnemy[k].x){
                       bulletEnemy[k].velocityX = eneV;
@@ -477,15 +499,26 @@
                      directionEnemy = 2;
 
                     }
-                    else if(this.x+this.velocityX<100){
+                    else if(this.x+this.velocityX<160){
                      this.velocityX = 2.5;
                      if(this.x==bulletEnemy[k].x){
                         bulletEnemy[k].velocityX = -eneV;
                       }
                      directionEnemy = 3;
                     }
-
                     this.x += this.velocityX;
+
+                  /*  if(gameMap[toIndex(enemies[k].tileFrom[0]-1,enemies[k].tileFrom[1])]!=0) 
+                    {
+                    this.x += this.velocityX;
+                    }
+
+                    if(gameMap[toIndex(enemies[k].tileFrom[0]+1,enemies[k].tileFrom[1])]!=0) 
+                    {
+                    this.x += this.velocityX;
+                    }*/
+
+
               
                    this.draw(ox,oy,k,statusEnemies);
                 };
